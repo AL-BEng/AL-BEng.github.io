@@ -1,0 +1,39 @@
+#Task1： 分割章节
+import re
+with open('./Scripts/红楼梦.txt', 'r', encoding='utf-8') as f:
+    s = f.read()
+
+lst_chapter = []
+chapter = re.findall("第[\u4E00-\u9FA5]+回",s)
+for x in chapter:
+    if x not in lst_chapter and len(x)<=5:
+        lst_chapter.append(x)
+print('章回列表：',lst_chapter)
+
+lst_start_chapterindex=[]
+for x in lst_chapter:
+    lst_start_chapterindex.append(s.index(x))
+lst_end_chapterindex=lst_start_chapterindex[1:]+[len(s)]
+lst_chapterindex=list(zip(lst_start_chapterindex,lst_end_chapterindex))
+print('章回位置：',lst_chapterindex)
+# Task2：计算每回苦笑悲喜次数
+cnt_happy=[]
+cnt_sad=[]
+for start, end in lst_chapterindex:
+    chapter_text=s[start:end]
+    cnt_happy.append(chapter_text.count("笑")+chapter_text.count("喜"))
+    cnt_sad.append(chapter_text.count("哭")+chapter_text.count("悲"))
+print('每章回喜悲次数：')
+for i in range(len(lst_chapter)):
+    print(f'{lst_chapter[i]}:喜P{cnt_happy[i]}次，悲{cnt_sad[i]}次')
+
+# Task3：计算每回中典型角色出现次数
+characters=["刘姥姥","王熙凤","林黛玉"]
+cnt_characters={c:[] for c in characters}
+for start, end in lst_chapterindex:
+    chapter_text=s[start:end]
+    for c in characters:
+        cnt_characters[c].append(chapter_text.count(c))
+print('每章回人物出现次数：')
+for c in characters:
+    print(f'{c}:',cnt_characters[c])
